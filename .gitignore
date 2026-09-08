@@ -1,0 +1,76 @@
+# Secrets & Environment Variables
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Python Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+.venv311/
+env.bak/
+venv.bak/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Node.js & Frontend Build Outputs
+node_modules/
+podcast-frontend/node_modules/
+dist/
+podcast-frontend/dist/
+dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# FFmpeg Distribution Binaries & Archives
+ffmpeg-*/
+ffmpeg.exe
+ffprobe.exe
+ffplay.exe
+*.zip
+*.7z
+*.tar.gz
+
+# Generated Audio & Media (Keep directory structure via .gitkeep)
+podcast-backend/audio_output/*
+!podcast-backend/audio_output/.gitkeep
+podcast-backend/voice_samples/*
+!podcast-backend/voice_samples/.gitkeep
+audio_output/*
+!audio_output/.gitkeep
+voice_samples/*
+!voice_samples/.gitkeep
+*.bin
+
+# Log files
+*.log
+error_log.txt
+podcast-backend/error_log.txt
+
+# Editor & OS files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

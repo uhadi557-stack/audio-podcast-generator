@@ -1,0 +1,72 @@
+/*
+ * App.css — Layout styles for the main App shell
+ *
+ * Handles the overall page structure: header area, main content grid,
+ * section spacing, and the two-column results layout.
+ */
+
+/* --- App wrapper --- */
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  padding-bottom: var(--space-2xl);
+}
+
+/* --- Setup section: voice + topic side by side on large screens --- */
+.setup-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .setup-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Results: sources + analyst notes in two columns --- */
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  animation: fadeInUp 0.5s var(--ease-out) both;
+}
+
+@media (max-width: 768px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Section labels (small caps above cards) --- */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.section-label .label-icon {
+  font-size: 1rem;
+}
+
+/* --- Error banner --- */
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--error-bg);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: var(--radius-md);
+  color: var(--error);
+  font-size: 0.9rem;
+  animation: fadeInUp 0.3s var(--ease-out) both;
+}
