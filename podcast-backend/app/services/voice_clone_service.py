@@ -69,6 +69,12 @@ def _get_model():
         from TTS.api import TTS
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device == "cpu":
+            # Restrict thread allocation on CPU to avoid massive memory pool buffers
+            num_threads = min(4, os.cpu_count() or 4)
+            torch.set_num_threads(num_threads)
+            logger.info("Configured torch num_threads=%d for CPU", num_threads)
+
         _tts_model = TTS("tts_models/multilingual/multi-dataset/xtts_v2").to(device)
         logger.info("XTTS-v2 loaded on device=%s", device)
     return _tts_model
@@ -90,6 +96,9 @@ async def clone_voice(audio_bytes: bytes, filename: str, title: str) -> str:
 
 def _synthesize_sync(text: str, speaker_wav_path: str | None) -> bytes:
     """The actual blocking model call, run off the event loop via to_thread."""
+    import gc
+    import torch
+
     model = _get_model()
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
         tmp_path = tmp.name
@@ -100,15 +109,17 @@ def _synthesize_sync(text: str, speaker_wav_path: str | None) -> bytes:
         if not speaker_wav or not Path(speaker_wav).exists():
             speaker_wav = str(DEFAULT_VOICE_SAMPLE)
 
-        model.tts_to_file(
-            text=text,
-            speaker_wav=speaker_wav,
-            language=settings.xtts_language,
-            file_path=tmp_path,
-        )
+        with torch.inference_mode():
+            model.tts_to_file(
+                text=text,
+                speaker_wav=speaker_wav,
+                language=settings.xtts_language,
+                file_path=tmp_path,
+            )
         return Path(tmp_path).read_bytes()
     finally:
         Path(tmp_path).unlink(missing_ok=True)
+        gc.collect()
 
 
 async def text_to_speech(
