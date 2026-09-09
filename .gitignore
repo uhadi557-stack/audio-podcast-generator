@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+.env
+__pycache__/
+*.pyc
+.venv/
+.venv311/
+venv/
+=======
 # Secrets & Environment Variables
 .env
 .env.*
@@ -52,11 +60,18 @@ podcast-backend/audio_output/*
 !podcast-backend/audio_output/.gitkeep
 podcast-backend/voice_samples/*
 !podcast-backend/voice_samples/.gitkeep
+>>>>>>> 7ff1b09141cc9c628916fe71ae26212e7734c922
 audio_output/*
 !audio_output/.gitkeep
 voice_samples/*
 !voice_samples/.gitkeep
 *.bin
+<<<<<<< HEAD
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+error_log.txt
+=======
 
 # Log files
 *.log
@@ -74,3 +89,4 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+>>>>>>> 7ff1b09141cc9c628916fe71ae26212e7734c922
