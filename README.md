@@ -52,8 +52,6 @@ Audio Podcast Generator/
 │   ├── public/                # Static web assets
 │   ├── package.json           # Dependencies and scripts
 │   └── vite.config.ts         # Vite configuration
-│
-└── Audio_Podcast_Generator_Thesis.pdf # Academic thesis & system documentation
 ```
 
 ---
