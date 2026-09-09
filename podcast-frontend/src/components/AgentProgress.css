@@ -1,0 +1,98 @@
+.agent-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.stages-grid {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .stages-grid {
+    flex-wrap: wrap;
+  }
+}
+
+.agent-card {
+  flex: 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-sm);
+  text-align: center;
+  transition: all 0.3s var(--ease-out);
+  opacity: 0.5;
+  min-width: 120px;
+}
+
+.agent-card.active {
+  opacity: 1;
+  background: var(--bg-card);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 16px var(--accent-glow);
+  transform: translateY(-2px);
+}
+
+.agent-card.done {
+  opacity: 0.8;
+  border-color: var(--success);
+}
+
+.agent-card .icon {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.agent-card .name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
+}
+
+.agent-card .status {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Terminal Log */
+.terminal-card {
+  background: var(--bg-terminal);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  height: 250px;
+  overflow-y: auto;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.log-line {
+  margin-bottom: 4px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.log-timestamp {
+  color: var(--text-muted);
+  margin-right: var(--space-sm);
+}
+
+.log-stage {
+  font-weight: 600;
+  margin-right: var(--space-sm);
+}
+
+/* Agent-specific colors for log lines */
+.log-stage.researcher { color: var(--agent-researcher); }
+.log-stage.analyst { color: var(--agent-analyst); }
+.log-stage.scriptwriter { color: var(--agent-scriptwriter); }
+.log-stage.audio-director { color: var(--agent-audio-dir); }
+.log-stage.audio-engineer { color: var(--agent-audio-eng); }
+.log-stage.system { color: var(--text-secondary); }

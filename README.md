@@ -1,75 +1,114 @@
-# Deep Research Podcaster — Python Backend
+# 🎙️ Audio Podcast Generator
 
-## Folder structure
+An end-to-end AI-powered automated podcast generation system. This project transforms topics, articles, and research queries into natural, multi-speaker conversational podcasts using Large Language Models (LLMs) and Neural Text-to-Speech (TTS) voice cloning engines.
 
+---
+
+## 🌟 Key Features
+
+- **Multi-Speaker Conversational Script Generation**:
+  - Leverages local LLMs via **Ollama** (e.g., `llama3.2`, `mistral`) or cloud LLMs via **Google Gemini API** (`gemini-3.1-flash-lite`).
+  - Automatically formats dialogues between distinct hosts with natural banter, questions, and transitions.
+
+- **Neural Voice Synthesis & Cloning**:
+  - **XTTS-v2** local neural voice cloning for zero-shot speaker adaptation from short audio samples.
+  - **Fish Audio** cloud TTS integration for ultra-realistic voice quality.
+  - Custom voice cloning upload: Provide reference voice samples to create unique speaker identities.
+
+- **Audio Post-Processing Pipeline**:
+  - Automated stitching and cross-fading of multi-speaker dialogue turns using **FFmpeg**.
+  - Background music blending and ducking for professional podcast production.
+  - Exports standard high-fidelity audio formats (WAV/MP3).
+
+- **Modern Web Interface**:
+  - React + TypeScript + Vite frontend with a clean, responsive audio workstation interface.
+  - Live progress tracking, script preview, audio playback, and sample management.
+
+---
+
+## 🏗️ Architecture
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+1. **Python 3.10+** (Recommended: Python 3.11)
+2. **Node.js 18+** & `npm`
+3. **FFmpeg**: Ensure FFmpeg is installed and accessible in your system `PATH`.
+4. *(Optional)* **Ollama**: For local offline script generation. Install from [ollama.com](https://ollama.com).
+
+---
+
+### 1. Backend Setup
+
+```bash
+# Navigate to backend directory
+cd podcast-backend
+
+# Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+# On Windows:
+.venv\Scripts\activate
+# On Linux/macOS:
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment variables
+copy .env.example .env     # Windows
+# or: cp .env.example .env # Linux/macOS
 ```
-podcast-backend/
-├── app/
-│   ├── main.py          # FastAPI app entrypoint — creates `app`, wires CORS, health check
-│   ├── api/              # Route handlers only (Phase 2+). Each file = one feature's endpoints.
-│   │                      #   Thin layer: parses request, calls a service, returns response.
-│   │                      #   No business logic and no direct external API calls live here.
-│   ├── services/          # Business logic + external API calls (Gemini, Fish Audio, mixing).
-│   │                      #   This is the Python equivalent of your old geminiService.ts,
-│   │                      #   except it runs on the server, so API keys never leave it.
-│   ├── models/            # Pydantic models: request/response schemas for the API,
-│   │                      #   plus any internal data classes (e.g. a DialogueLine).
-│   ├── core/               # Cross-cutting concerns used by everything else:
-│   │                      #   config.py (env vars), logging_config.py, exceptions.py.
-│   └── utils/              # Small, stateless helper functions with no business logic
-│                            #   of their own (string cleanup, filename sanitizing, etc.)
-├── audio_output/           # Generated MP3/WAV files land here at runtime. Git-ignored
-│                            #   except for a .gitkeep placeholder, so the folder exists
-│                            #   on a fresh clone even before anything's been generated.
-├── tests/                  # pytest test files, mirroring the app/ structure.
-├── requirements.txt        # Exact pinned dependency versions.
-├── .env.example             # Template for the real .env file (never commit real .env).
-└── README.md
+
+Edit `.env` to configure your keys (optional depending on selected engine):
+```ini
+GEMINI_API_KEY="your_gemini_api_key"
+GEMINI_MODEL=gemini-3.1-flash-lite
+FISH_AUDIO_API_KEY="your_fish_audio_api_key"
+AUDIO_OUTPUT_DIR=audio_output
 ```
 
-## Why this structure specifically
+Run the backend server:
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+Backend API will be available at: `http://localhost:8000` (API Docs at `http://localhost:8000/docs`).
 
-- **`api/` vs `services/` split**: this is the single most important structural decision in
-  the whole backend, and it directly fixes the biggest architectural flaw in your original
-  project. In the JS version, `App.tsx` (the "route handler" equivalent) called Fish Audio's
-  API *directly*. Here, route handlers in `api/` are never allowed to call `httpx` or any
-  external API themselves — they only call functions in `services/`. This isn't just tidiness:
-  it means every external call goes through one tested, retried, logged code path, and it
-  means you can unit-test `services/` functions without spinning up the whole web server.
-- **`core/config.py` as the only place reading env vars**: prevents the exact bug class where
-  `fishApiKey` was silently `undefined` in your original code because the env var name didn't
-  match — Pydantic validates required fields exist at startup and crashes immediately with a
-  clear error if not, instead of failing deep inside a fetch call three phases later.
+---
 
-## Running Phase 1
+### 2. Frontend Setup
+
+In a new terminal:
+
+```bash
+# Navigate to frontend directory
+cd podcast-frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+Frontend UI will be running at: `http://localhost:5173` (or the port indicated in the terminal).
+
+---
+
+## 🧪 Testing
+
+Run backend tests using pytest:
 
 ```bash
 cd podcast-backend
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env             # then edit .env and paste your real API keys
-uvicorn app.main:app --reload
+pytest tests/
 ```
 
-Then open http://127.0.0.1:8000/health — you should see:
+---
 
-```json
-{"status": "ok", "environment": "development"}
-```
+## 📄 License
 
-And http://127.0.0.1:8000/docs gives you FastAPI's auto-generated interactive API
-documentation — this is your built-in Postman replacement, and it's the tool you'll use
-to test each new endpoint as we build it in the coming phases.
-
-## What "done" looks like for Phase 1
-
-- [ ] `pip install -r requirements.txt` succeeds with no errors
-- [ ] `.env` exists locally with your real keys (and is NOT committed to git)
-- [ ] `uvicorn app.main:app --reload` starts without crashing
-- [ ] `/health` returns `{"status": "ok", ...}`
-- [ ] `/docs` loads in the browser
-
-If `uvicorn` fails to start with a Pydantic validation error, that's expected and good —
-it means a required env var is missing from `.env`. Read the error message; it names the
-exact field, which is the whole point of validating config at startup instead of at runtime.
+This project is open-source and available under the [MIT License](LICENSE).
