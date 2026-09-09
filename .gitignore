@@ -1,0 +1,15 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+.venv311/
+venv/
+audio_output/*
+!audio_output/.gitkeep
+voice_samples/*
+!voice_samples/.gitkeep
+*.bin
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+error_log.txt
